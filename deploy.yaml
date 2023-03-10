@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wiki-random
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wiki-random
+  template:
+    metadata:
+      labels:
+        app: wiki-random
+    spec:
+      containers:
+      - name: app
+        image: docker.io/zebra999/wiki_random:v0.1
+        command:
+        - python
+        - /root/run.py
