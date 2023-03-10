@@ -8,6 +8,7 @@ while True:\n\
 	list = wikipedia.random(pages=5)\n\
 	myhash = hashlib.sha1(str(list).encode('utf-8'))\n\
 	print(myhash.hexdigest(), ', '.join(list))\n\
-	time.sleep(5)\
+	time.sleep(30)\
 " >> /root/run.py
-RUN cat /root/run.py
+RUN python --version
+RUN ls -lah /root/run.py

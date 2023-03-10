@@ -14,7 +14,14 @@ spec:
     spec:
       containers:
       - name: app
-        image: docker.io/zebra999/wiki_random:v0.1
+        image: docker.io/zebra999/wiki_random:v0.5
         command:
         - python
         - /root/run.py
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 800m
+            memory: 500Mi
