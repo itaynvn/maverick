@@ -7,7 +7,7 @@ spec:
   gateways:
   - istio-gw-cnvrg
   hosts:
-  - elasticsearch.aks-cicd-16722.cicd.cnvrg.me
+  - mvr-elasticsearch.aks-cicd-16722.cicd.cnvrg.me
   http:
   - retries:
       attempts: 5
@@ -28,7 +28,7 @@ spec:
   gateways:
   - istio-gw-cnvrg
   hosts:
-  - kibana.aks-cicd-16722.cicd.cnvrg.me
+  - mvs-kibana.aks-cicd-16722.cicd.cnvrg.me
   http:
   - retries:
       attempts: 5
