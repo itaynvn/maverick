@@ -1,0 +1,41 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:  
+  name: elasticsearch
+  namespace: cnvrg
+spec:
+  gateways:
+  - istio-gw-cnvrg
+  hosts:
+  - elasticsearch.aks-cicd-16722.cicd.cnvrg.me
+  http:
+  - retries:
+      attempts: 5
+      perTryTimeout: 3600s
+    route:
+    - destination:
+        host: elasticsearch-master.mvr.svc.cluster.local
+        port:
+          number: 80
+    timeout: 18000s
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:  
+  name: kibana
+  namespace: cnvrg
+spec:
+  gateways:
+  - istio-gw-cnvrg
+  hosts:
+  - kibana.aks-cicd-16722.cicd.cnvrg.me
+  http:
+  - retries:
+      attempts: 5
+      perTryTimeout: 3600s
+    route:
+    - destination:
+        host: kibana-kibana.mvr.svc.cluster.local
+        port:
+          number: 80
+    timeout: 18000s
