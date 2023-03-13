@@ -5,18 +5,20 @@ maverick is just a codename bro dont get mad
 ## steps
 run to create configmap:
 ```
-kubectl -n mvr create configmap logstash-config --from-file=logstash.conf --from-file=logstash.yml
+kubectl -n mvr create configmap logstash-configmap \
+--from-file=logstash.conf --from-file=logstash.yml
 ```
 
-add configmap to logstash deploy:
+patch logstash statefulset to mount the configmap:
 ```
-spec:
-      containers:
-        volumeMounts:
-        - name: config-volume
-          mountPath: /usr/share/logstash/config
-      volumes:
-      - name: config-volume
-        configMap:
-          name: logstash-config
+kubectl -n mvr patch sts logstash-logstash \
+--patch-file logstash-patch.yaml
+```
+
+patch logstash service:
+```
+kubectl -n mvr patch svc logstash-logstash-headless --type='json' \
+-p='[{"op": "replace", "path": "/spec/ports/0/port", "value":5044}]'
+kubectl -n mvr patch svc logstash-logstash-headless --type='json' \
+-p='[{"op": "replace", "path": "/spec/ports/0/targetPort", "value":5044}]'
 ```

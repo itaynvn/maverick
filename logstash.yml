@@ -1,11 +1,4 @@
-# This is an example Logstash configuration file.
-
-# Set the pipeline.id option to a unique name for each Logstash pipeline.
-# This is required if you run multiple Logstash instances on the same machine.
 pipeline.id: wikirand
-
-# Set the path.config option to the location of your Logstash configuration file(s).
-path.config: /usr/share/logstash/config/logstash.conf
-
-# Set the path.logs option to the location where you want Logstash to store its logs.
 path.logs: /var/log/logstash
+http.host: "0.0.0.0"
+path.config: /usr/share/logstash/pipeline
