@@ -1,0 +1,37 @@
+kind: ConfigMap
+metadata:
+  name: logstash-configmap
+  namespace: mvr
+apiVersion: v1
+data:
+  logstash.conf: |-
+    input {
+      beats {
+        port => 5044
+      }
+    }
+
+    filter {
+      grok {
+        match => { "message" => "%{SHA1:sha1} %{GREEDYDATA:text}" }
+      }
+    }
+
+    output {
+      stdout {
+        codec => rubydebug
+      }
+      elasticsearch {
+        hosts => ["https://elasticsearch-master.mvr.svc.cluster.local:9200"]
+        index => "wiki-random-%{+YYYY.MM.dd}"
+        ssl => true
+        ssl_certificate_verification => false
+        user => "${ES_USER}"
+        password => "${ES_PASS}"
+      }
+    }
+  logstash.yml: |-
+    pipeline.id: wikirand
+    path.logs: /var/log/logstash
+    http.host: "0.0.0.0"
+    path.config: /usr/share/logstash/pipeline

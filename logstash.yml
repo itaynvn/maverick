@@ -1,4 +1,0 @@
-pipeline.id: wikirand
-path.logs: /var/log/logstash
-http.host: "0.0.0.0"
-path.config: /usr/share/logstash/pipeline
