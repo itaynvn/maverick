@@ -8,7 +8,7 @@ RUN wget -O /root/dictionary.csv "https://www.bragitoff.com/wp-content/uploads/2
 # create python script
 RUN echo "\
 import csv, random, time, hashlib\n\
-with open('dictionary.csv', newline='') as csvfile:\n\
+with open('/root/dictionary.csv', newline='') as csvfile:\n\
     reader = csv.reader(csvfile)\n\
     rows = list(reader)\n\
     while True:\n\
