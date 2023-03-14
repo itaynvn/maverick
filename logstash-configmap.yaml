@@ -10,21 +10,19 @@ data:
         port => 5044
       }
     }
-
     filter {
       grok {
-        match => { "message" => "%{SHA1:sha1} %{GREEDYDATA:text}" }
+        match => { "message" => "%{WORD:sha1_id} %{GREEDYDATA:random_text}" }
       }
     }
-
     output {
       stdout {
         codec => rubydebug
       }
       elasticsearch {
-        hosts => ["https://elasticsearch-master.mvr.svc.cluster.local:9200"]
+        hosts => ["elasticsearch-master.mvr.svc.cluster.local:9200"]
         index => "wiki-random-%{+YYYY.MM.dd}"
-        ssl => true
+        ssl => false
         ssl_certificate_verification => false
         user => "${ES_USER}"
         password => "${ES_PASS}"

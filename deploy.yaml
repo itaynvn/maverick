@@ -1,24 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wiki-random
+  name: book-random
   namespace: mvr
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: wiki-random
+      app: book-random
   template:
     metadata:
       labels:
-        app: wiki-random
+        app: book-random
     spec:
       containers:
       - name: app
-        image: docker.io/zebra999/wiki_random:v0.7
+        image: ubuntu
+        env:
+        - name: BOOK_URL
+          value: https://www.gutenberg.org/files/2701/2701-0.txt
         command:
-        - python
-        - /root/run.py
+        - /bin/bash
+        - -c
+        - |
+          apt-get -y update && apt-get -y install wget
+          wget $BOOK_URL -O /root/book.txt
+          i=0; while true; do
+            line=$(shuf -n 1 /root/book.txt)
+            mysha=$(echo $line | sha1sum)
+            echo "$mysha $i $line"; i=$((i+1))
+            sleep 10
+          done
         resources:
           requests:
             cpu: 100m

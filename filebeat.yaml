@@ -44,16 +44,20 @@ metadata:
     k8s-app: filebeat
 data:
   filebeat.yml: |-
-    filebeat.config:
-      prospectors:
-        # Mounted `filebeat-prospectors` configmap:
-        path: ${path.config}/prospectors.d/*.yml
-        # Reload prospectors configs as they change:
-        reload.enabled: false
-      modules:
-        path: ${path.config}/modules.d/*.yml
-        # Reload module configs as they change:
-        reload.enabled: false
+    setup.ilm.enabled: false
+    filebeat.inputs:
+    - type: log
+      symlinks: true
+      paths:
+        - /var/log/containers/*.log
+      processors:
+        - add_kubernetes_metadata:
+            host: ${NODE_NAME}
+            in_cluster: true
+            default_matchers.enabled: false
+            matchers:
+            - logs_path:
+                logs_path: /var/log/containers/
     output.logstash:
       hosts: ['logstash-logstash-headless.mvr.svc.cluster.local:5044']
 ---
@@ -94,12 +98,27 @@ spec:
       containers:
       - name: filebeat
         image: docker.elastic.co/beats/filebeat:6.8.4
-        args: ["-c", "/etc/filebeat.yml","-e",]
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: ES_USER
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-master-credentials
+              key: username
+        - name: ES_PASS
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-master-credentials
+              key: password
+        args: ["-c", "/usr/share/filebeat/filebeat.yml","-e",]
         securityContext:
           runAsUser: 0
         volumeMounts:
         - name: config
-          mountPath: /etc/filebeat.yml
+          mountPath: /usr/share/filebeat/filebeat.yml
           readOnly: true
           subPath: filebeat.yml
         - name: prospectors
